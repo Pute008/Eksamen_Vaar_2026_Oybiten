@@ -57,6 +57,7 @@ document.getElementById("newUserForm").addEventListener("submit", async function
         } else {
             alert(result.message);
             document.getElementById("newUserForm").reset();
+            window.location.href='./index.html';
         }
     } catch (error) {
         alert("Error creating user: " + error.message);
