@@ -3,18 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Add Ticket</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="addTicket.js" defer></script>
 </head>
 <body>
+    <header>
+        <h1>Add Ticket</h1>
+    </header>
     <menu>
         <ul>
             <li><a href="home.html">Home</a></li>
+            <li><a href="/addTicket.html">Add Ticket</a></li>
+            <li><a href="/seeTickets.html">See Tickets</a></li>
         </ul>
     </menu>
     <main>
-        <form action="">
-            <label for=""></label>
-            <select name="" id=""></select>
+        <form>
+            <label for="user">User:</label>
+            <input type="text" id="users" required><br>
+            <!-- <select name="user" id="user"></select> -->
+
+            <label for="title">Title:</label>
+            <input type="text" id="status" required><br>
+
+            <label for="description">Description:</label>
+            <input type="text" maxlength="350" id="description" required><br>
+
+            <label for="status">Status:</label>
+            <input type="text" id="status" required><br>
+
+            <label for="created_at">Created at:</label>
+            <input type="date" id="created_at" required><br>
         </form>
     </main>
 </body>

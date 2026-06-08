@@ -133,6 +133,24 @@ app.get('/generateUsername', (req, res) => {
     }
 });
 
+// rute til html sider
+app.get('/addTicket.html', kreverInnlogging, (req, res) => {
+    res.sendFile(__dirname + "/hidden/addTicket.html");
+})
+
+app.get('/seeTickets.html', kreverInnlogging, (req, res) => {
+    res.sendFile(__dirname + "/hidden/seeTickets.html");
+})
+
+// ruter for å koble til js
+app.get('/addTicket.js', kreverInnlogging, (req, res) => {
+    res.sendFile(__dirname + "/hidden/addTicket.js");
+})
+
+app.get('/seeTickets.js', kreverInnlogging, (req, res) => {
+    res.sendFile(__dirname + "/hidden/seeTickets.js");
+})
+
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`)
 });
