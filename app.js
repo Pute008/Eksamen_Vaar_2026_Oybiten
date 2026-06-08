@@ -100,6 +100,16 @@ app.get('/getPostadresse', (req, res) => {
     }
 });
 
+app.get('/getStatus', (req, res) => {
+    try {
+        const status = db.prepare("SELECT * FROM status").all();
+        res.json(status);
+    } catch (error) {
+        console.error("Error fetching status:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.get('/generateUsername', (req, res) => {
     try {
         const { firstname, lastname } = req.query;
@@ -132,6 +142,40 @@ app.get('/generateUsername', (req, res) => {
         res.status(500).json({ error: error.message });
     }
 });
+
+
+
+
+app.post("/addTicket", kreverInnlogging, async (req, res) => {
+    try {
+        const { title, description } = req.body;
+        const user_id = req.session.users.id;
+        const status_id = 5; // Status "New"
+        
+        if (!title || !description) {
+            return res.status(400).json({ error: "Title and description are required" });
+        }
+        
+        const stmt = db.prepare("INSERT INTO ticket (user_id, status_id, title, description, created_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)");
+        const info = stmt.run(user_id, status_id, title, description);
+        res.json({ message: "Ticket created successfully", info });
+    } catch (error) {
+        console.error("Error creating ticket:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.get("/seeTickets", kreverRolle(2, 3), (req, res) => {
+    try {
+        const tickets = db.prepare("SELECT t.id, t.title, t.description, t.created_at, s.status_name, u.firstname, u.lastname, u.email FROM ticket t JOIN Status s ON t.status_id = s.status_id JOIN users u ON t.user_id = u.user_id ORDER BY t.created_at DESC").all();
+        res.json({ tickets });
+    } catch (error) {
+        console.error("Error fetching tickets:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+
 
 // rute til html sider
 app.get('/addTicket.html', kreverInnlogging, (req, res) => {

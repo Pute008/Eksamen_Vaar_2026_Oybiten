@@ -19,23 +19,19 @@
         </ul>
     </menu>
     <main>
-        <form>
-            <label for="user">User:</label>
-            <input type="text" id="users" required><br>
-            <!-- <select name="user" id="user"></select> -->
-
+        <form id="addTicketForm">
             <label for="title">Title:</label>
-            <input type="text" id="status" required><br>
+            <input type="text" id="title" name="title" required><br>
 
             <label for="description">Description:</label>
-            <input type="text" maxlength="350" id="description" required><br>
+            <textarea id="description" name="description" maxlength="350" required></textarea><br>
 
-            <label for="status">Status:</label>
-            <input type="text" id="status" required><br>
-
-            <label for="created_at">Created at:</label>
-            <input type="date" id="created_at" required><br>
+            <button type="submit">Create Ticket</button>
         </form>
     </main>
+
+    <footer>
+        <button onclick="logout()">Logout</button>
+    </footer>
 </body>
 </html>
