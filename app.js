@@ -3,7 +3,7 @@ const session = require("express-session");
 const app = express();
 
 const Database = require("better-sqlite3");
-const db = new Database("skole.db");
+const db = new Database("kundeportal_oybiten.db");
 
 const cors = require("cors");
 app.use(cors());
