@@ -1,2 +1,2 @@
-# Eksamen_Vaar_2026_Oybiten
+# Eksamen Vår 2026 Øybiten
 Eksamensoppgave for våren 2026

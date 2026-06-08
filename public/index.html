@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="login.js" defer></script>
+</head>
+<body>
+    <header>
+        Øybiten
+    </header>
+    <main>
+        <form onsubmit="loginPerson(event)">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br>
+
+            <button type="submit">Logg inn</button>
+            <p><a href="newUser.html" class="button">New? click here to make a new user!</a></p>
+        </form>
+    </main>
+</body>
+</html>

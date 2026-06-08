@@ -1,0 +1,27 @@
+{
+  "name": "eksamen_vaar_2026_oybiten",
+  "version": "1.0.0",
+  "description": "Eksamensoppgave for våren 2026",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Pute008/Eksamen_Vaar_2026_Oybiten.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Pute008/Eksamen_Vaar_2026_Oybiten/issues"
+  },
+  "homepage": "https://github.com/Pute008/Eksamen_Vaar_2026_Oybiten#readme",
+  "dependencies": {
+    "bcrypt": "^6.0.0",
+    "better-sqlite3": "^12.10.0",
+    "cors": "^2.8.6",
+    "express": "^5.2.1",
+    "express-session": "^1.19.0"
+  }
+}
