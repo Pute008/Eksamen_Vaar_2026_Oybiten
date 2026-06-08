@@ -16,18 +16,32 @@
             <label for="lastname">Lastname:</label>
             <input type="text" id="lastname" name="lastname" required><br>
 
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" readonly><br>
+
             <label for="email">Email:</label>
             <input type="email" id="email" name="email" required><br>
 
             <label for="password">Password:</label>
             <input type="password" id="password" name="password" required minlength="6"><br>
 
-            <!-- <p id="demo"></p> -->
+            <label for="telephone">Telephone Number:</label>
+            <input type="text" id="tlf" name="tlf" required minlength="7"><br>
+
+            <label for="role">Role:</label>
+            <select id="role" name="role" required>
+                <option value="" disabled selected>Select role</option>
+            </select><br>
+
+            <label for="postadresse">Postadresse:</label>
+            <select id="postadresse" name="postadresse" required>
+                <option value="" disabled selected>Select class</option>
+            </select><br>
 
             <button type="submit">Create User</button>
         </form>
 
-        <p><a href="index.html" class="button">Log inn</a></p>
+        <p><a href="index.html" class="button">Logg inn</a></p>
     </main>
 </body>
 </html>
