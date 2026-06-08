@@ -14,7 +14,9 @@ async function logout() {
 async function loadTickets() {
     try {
         const response = await fetch("/seeTickets");
-        if (!response.ok)throw new Error("Could not load tickets");
+        if (!response.ok) {
+            throw new Error("Could not load tickets");
+        }
 
         const data = await response.json();
         const ticketsDiv = document.querySelector("main > div");
@@ -24,12 +26,42 @@ async function loadTickets() {
             return;
         }
         
-        let html = "<table border='1'><tr><th>ID</th><th>Title</th><th>Description</th><th>User</th><th>Email</th><th>Status</th><th>Created</th></tr>";
+        ticketsDiv.innerHTML = "";
+        
         data.tickets.forEach(ticket => {
-            html += `<tr><td>${ticket.id}</td><td>${ticket.title}</td><td>${ticket.description}</td><td>${ticket.firstname} ${ticket.lastname}</td><td>${ticket.email}</td><td>${ticket.status_name}</td><td>${new Date(ticket.created_at).toLocaleDateString()}</td></tr>`;
+            const ticketCard = document.createElement("div");
+            ticketCard.classList.add("ticket-card");
+            ticketCard.style.border = "1px solid #ccc";
+            ticketCard.style.padding = "15px";
+            ticketCard.style.marginBottom = "15px";
+            ticketCard.style.borderRadius = "5px";
+            
+            const ticketId = document.createElement("p");
+            ticketId.textContent = "Ticket ID: " + ticket.id;
+            ticketCard.appendChild(ticketId);
+            
+            const title = document.createElement("h2");
+            title.textContent = ticket.title;
+            ticketCard.appendChild(title);
+            
+            const description = document.createElement("p");
+            description.textContent = "Description: " + ticket.description;
+            ticketCard.appendChild(description);
+            
+            const user = document.createElement("p");
+            user.textContent = "User: " + ticket.firstname + " " + ticket.lastname + " (" + ticket.email + ")";
+            ticketCard.appendChild(user);
+            
+            const status = document.createElement("p");
+            status.textContent = "Status: " + ticket.status_name;
+            ticketCard.appendChild(status);
+            
+            const created = document.createElement("p");
+            created.textContent = "Created: " + new Date(ticket.created_at).toLocaleDateString();
+            ticketCard.appendChild(created);
+            
+            ticketsDiv.appendChild(ticketCard);
         });
-        html += "</table>";
-        ticketsDiv.innerHTML = html;
     } catch (error) {
         console.error("Error loading tickets:", error);
         document.querySelector("main > div").innerHTML = "<p>Error loading tickets</p>";
