@@ -261,11 +261,14 @@ app.post("/addComment", kreverRolle(2, 3), async (req, res) => {
     }
 });
 
+// :ticketId = en parameter i URL-en
+// rute for å vise/hente alle kommentarer
 app.get("/getComments/:ticketId", kreverInnlogging, (req, res) => {
     try {
+        // henter id fra parameter
         const { ticketId } = req.params;
         const comments = db.prepare(`
-            SELECT c.id, c.comment_text, c.created_at, u.firstname, u.lastname
+            SELECT c.comment_id as id, c.comment_text, c.created_at, u.firstname, u.lastname
             FROM comments c
             JOIN users u ON c.user_id = u.user_id
             WHERE c.ticket_id = ?

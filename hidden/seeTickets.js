@@ -23,8 +23,11 @@ async function loadStatuses() {
     }
 }
 
+// oppdaterer statusen til en ticket
+// (valgfritt) legger til en kommentar
 async function updateTicketStatus(ticketId, statusId, comment) {
     try {
+        // oppdaterer statusen til en ticket
         const response = await fetch("/updateTicketStatus", {
             method: "POST",
             headers: {
@@ -40,6 +43,8 @@ async function updateTicketStatus(ticketId, statusId, comment) {
         if (!response.ok) {
             alert("Error: " + (result.error || result.message));
         } else {
+            // hvis comment finnes
+            // og ikke bare er tom tekst
             if (comment && comment.trim()) {
                 const commentResponse = await fetch("/addComment", {
                     method: "POST",
@@ -56,8 +61,10 @@ async function updateTicketStatus(ticketId, statusId, comment) {
                     alert("Status updated but comment failed to save");
                 }
             }
-            
+
             alert(result.message);
+            // tømmer ticket-listen
+            // laster den inn på nytt (med oppdatert status)
             document.querySelector("#ticketList").innerHTML = "<h1>Ticket List</h1>";
             loadTickets();
         }
@@ -66,6 +73,7 @@ async function updateTicketStatus(ticketId, statusId, comment) {
     }
 }
 
+// funksjon for å hente alle kommentarer
 async function loadComments(ticketId, container) {
     try {
         const response = await fetch(`/getComments/${ticketId}`);
@@ -108,6 +116,7 @@ async function loadComments(ticketId, container) {
     }
 }
 
+// funksjon for å vise alle DINE tickets
 async function loadYourTickets() {
     const tabellBody = document.querySelector("#yourTickets");
     try {
@@ -236,13 +245,22 @@ async function loadTickets() {
             created.textContent = "Created: " + new Date(ticket.created_at).toLocaleDateString();
             ticketCard.appendChild(created);
 
-            const comment = document.createElement("p");
-            if (!ticket.comment) {
-                created.textContent = "Comments: No comments";
-            } else {
-                created.textContent = "Comments: " + ticket.comment;
+            const commentsSection = document.createElement("div");
+            commentsSection.style.marginTop = "15px";
+            commentsSection.style.paddingTop = "15px";
+            commentsSection.style.borderTop = "1px solid #ddd";
 
-            }
+            const commentsTitle = document.createElement("strong");
+            commentsTitle.textContent = "Comments:";
+            commentsSection.appendChild(commentsTitle);
+
+            const commentsContainer = document.createElement("div");
+            commentsContainer.id = "comments_" + ticket.id;
+            commentsContainer.style.marginTop = "10px";
+            commentsSection.appendChild(commentsContainer);
+
+            ticketCard.appendChild(commentsSection);
+            loadComments(ticket.id, commentsContainer);
 
             // Add status dropdown and update button for support/admin
             if (allStatuses.length > 0) {
