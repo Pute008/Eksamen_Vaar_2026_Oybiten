@@ -243,6 +243,44 @@ app.post("/updateTicketStatus", kreverRolle(2, 3), async (req, res) => {
     }
 });
 
+app.post("/addComment", kreverRolle(2, 3), async (req, res) => {
+    try {
+        const { ticket_id, comment_text } = req.body;
+        const user_id = req.session.users.id;
+        
+        if (!ticket_id || !comment_text) {
+            return res.status(400).json({ error: "Ticket ID and comment text are required" });
+        }
+        
+        const stmt = db.prepare("INSERT INTO comments (ticket_id, user_id, comment_text, created_at) VALUES (?, ?, ?, CURRENT_TIMESTAMP)");
+        const info = stmt.run(ticket_id, user_id, comment_text);
+        res.json({ message: "Comment added successfully", info });
+    } catch (error) {
+        console.error("Error adding comment:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+// :ticketId = en parameter i URL-en
+// rute for å vise/hente alle kommentarer
+app.get("/getComments/:ticketId", kreverInnlogging, (req, res) => {
+    try {
+        // henter id fra parameter
+        const { ticketId } = req.params;
+        const comments = db.prepare(`
+            SELECT c.comment_id as id, c.comment_text, c.created_at, u.firstname, u.lastname
+            FROM comments c
+            JOIN users u ON c.user_id = u.user_id
+            WHERE c.ticket_id = ?
+            ORDER BY c.created_at ASC
+        `).all(ticketId);
+        res.json({ comments });
+    } catch (error) {
+        console.error("Error fetching comments:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 
 // rute til html sider
 app.get('/addTicket.html', kreverInnlogging, (req, res) => {
