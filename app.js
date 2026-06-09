@@ -143,9 +143,6 @@ app.get('/generateUsername', (req, res) => {
     }
 });
 
-
-
-
 app.post("/addTicket", kreverInnlogging, async (req, res) => {
     try {
         const { title, description } = req.body;
@@ -184,10 +181,27 @@ app.get("/seeYourTickets", kreverInnlogging, (req, res) => {
             ON t.status_id = s.status_id
             JOIN users u
             ON t.user_id = u.user_id
-            WHERE u.user_id = 1`).all(userID);
+            WHERE u.user_id = ?`).all(userID);
         res.json({ tickets });
     } catch (error) {
         console.error("Error fetching tickets:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post("/updateTicketStatus", kreverRolle(2, 3), async (req, res) => {
+    try {
+        const { ticket_id, status_id } = req.body;
+        
+        if (!ticket_id || !status_id) {
+            return res.status(400).json({ error: "Ticket ID and Status ID are required" });
+        }
+        
+        const stmt = db.prepare("UPDATE ticket SET status_id = ? WHERE id = ?");
+        const info = stmt.run(status_id, ticket_id);
+        res.json({ message: "Ticket status updated successfully", info });
+    } catch (error) {
+        console.error("Error updating ticket status:", error);
         res.status(500).json({ error: error.message });
     }
 });
