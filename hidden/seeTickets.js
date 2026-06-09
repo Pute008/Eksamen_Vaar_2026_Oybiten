@@ -23,7 +23,7 @@ async function loadStatuses() {
     }
 }
 
-async function updateTicketStatus(ticketId, statusId) {
+async function updateTicketStatus(ticketId, statusId, comment) {
     try {
         const response = await fetch("/updateTicketStatus", {
             method: "POST",
@@ -40,13 +40,71 @@ async function updateTicketStatus(ticketId, statusId) {
         if (!response.ok) {
             alert("Error: " + (result.error || result.message));
         } else {
+            if (comment && comment.trim()) {
+                const commentResponse = await fetch("/addComment", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        ticket_id: ticketId,
+                        comment_text: comment
+                    })
+                });
+                
+                if (!commentResponse.ok) {
+                    alert("Status updated but comment failed to save");
+                }
+            }
+            
             alert(result.message);
-            // Reload tickets
             document.querySelector("#ticketList").innerHTML = "<h1>Ticket List</h1>";
             loadTickets();
         }
     } catch (error) {
         alert("Error updating status: " + error.message);
+    }
+}
+
+async function loadComments(ticketId, container) {
+    try {
+        const response = await fetch(`/getComments/${ticketId}`);
+        if (!response.ok) throw new Error("Could not load comments");
+        
+        const data = await response.json();
+        
+        if (data.comments.length === 0) {
+            container.innerHTML = "<p style='color: #888;'>No comments yet</p>";
+            return;
+        }
+        
+        container.innerHTML = "";
+        data.comments.forEach(comment => {
+            const commentDiv = document.createElement("div");
+            commentDiv.style.backgroundColor = "#f5f5f5";
+            commentDiv.style.padding = "10px";
+            commentDiv.style.marginBottom = "8px";
+            commentDiv.style.borderRadius = "3px";
+            commentDiv.style.borderLeft = "3px solid #007bff";
+            
+            const author = document.createElement("strong");
+            author.textContent = comment.firstname + " " + comment.lastname;
+            commentDiv.appendChild(author);
+            
+            const date = document.createElement("small");
+            date.textContent = " - " + new Date(comment.created_at).toLocaleDateString();
+            date.style.color = "#888";
+            commentDiv.appendChild(date);
+            
+            const text = document.createElement("p");
+            text.textContent = comment.comment_text;
+            text.style.margin = "8px 0 0 0";
+            commentDiv.appendChild(text);
+            
+            container.appendChild(commentDiv);
+        });
+    } catch (error) {
+        console.error("Error loading comments:", error);
     }
 }
 
@@ -101,6 +159,23 @@ async function loadYourTickets() {
             const created = document.createElement("p");
             created.textContent = "Created: " + new Date(ticket.created_at).toLocaleDateString();
             ticketCard.appendChild(created);
+
+            const commentsSection = document.createElement("div");
+            commentsSection.style.marginTop = "15px";
+            commentsSection.style.paddingTop = "15px";
+            commentsSection.style.borderTop = "1px solid #ddd";
+            
+            const commentsTitle = document.createElement("strong");
+            commentsTitle.textContent = "Comments:";
+            commentsSection.appendChild(commentsTitle);
+            
+            const commentsContainer = document.createElement("div");
+            commentsContainer.id = "comments_" + ticket.id;
+            commentsContainer.style.marginTop = "10px";
+            commentsSection.appendChild(commentsContainer);
+            
+            ticketCard.appendChild(commentsSection);
+            loadComments(ticket.id, commentsContainer);
             
             tabellBody.appendChild(ticketCard);
         });
@@ -111,7 +186,7 @@ async function loadYourTickets() {
 }
 
 
-
+// load all tickets created
 async function loadTickets() {
     const tabellBody = document.querySelector("#ticketList");
     try {
@@ -161,6 +236,23 @@ async function loadTickets() {
             created.textContent = "Created: " + new Date(ticket.created_at).toLocaleDateString();
             ticketCard.appendChild(created);
 
+            const commentsSection = document.createElement("div");
+            commentsSection.style.marginTop = "15px";
+            commentsSection.style.paddingTop = "15px";
+            commentsSection.style.borderTop = "1px solid #ddd";
+            
+            const commentsTitle = document.createElement("strong");
+            commentsTitle.textContent = "Comments:";
+            commentsSection.appendChild(commentsTitle);
+            
+            const commentsContainer = document.createElement("div");
+            commentsContainer.id = "comments_" + ticket.id;
+            commentsContainer.style.marginTop = "10px";
+            commentsSection.appendChild(commentsContainer);
+            
+            ticketCard.appendChild(commentsSection);
+            loadComments(ticket.id, commentsContainer);
+
             // Add status dropdown and update button for support/admin
             if (allStatuses.length > 0) {
                 const statusLabel = document.createElement("label");
@@ -176,20 +268,30 @@ async function loadTickets() {
                     statusSelect.appendChild(option);
                 });
                 ticketCard.appendChild(statusSelect);
+
+                const commentLabel = document.createElement("label");
+                commentLabel.textContent = "Add Comment (optional): ";
+                commentLabel.style.display = "block";
+                commentLabel.style.marginTop = "10px";
+                ticketCard.appendChild(commentLabel);
+
+                const commentTextarea = document.createElement("textarea");
+                commentTextarea.id = "comment_" + ticket.id;
+                commentTextarea.placeholder = "Add a comment...";
+                commentTextarea.style.width = "100%";
+                commentTextarea.style.minHeight = "80px";
+                ticketCard.appendChild(commentTextarea);
                 
                 const updateButton = document.createElement("button");
                 updateButton.textContent = "Update Status";
+                updateButton.style.marginTop = "10px";
                 updateButton.onclick = () => {
                     const newStatusId = statusSelect.value;
-                    updateTicketStatus(ticket.id, newStatusId);
+                    const commentText = commentTextarea.value;
+                    updateTicketStatus(ticket.id, newStatusId, commentText);
                 };
                 ticketCard.appendChild(updateButton);
             }
-
-            // const button = document.createElement("button");
-            // button.textContent = "More info";
-            // button.onclick = () => window.location.href = "/updateTicket.html";
-            // ticketCard.appendChild(button);
             
             tabellBody.appendChild(ticketCard);
         });
