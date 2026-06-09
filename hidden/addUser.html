@@ -1,14 +1,24 @@
+<!-- legge til elev eller lærer -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>New user</title>
+    <title>Add User</title>
     <link rel="stylesheet" href="style.css">
-    <script src="newUser.js" defer></script>
+    <script src="addUser.js" defer></script>
 </head>
 <body>
-    <main>
+    <header><h1>Add User</h1></header>
+    <menu>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="/addTicket.html">Add Ticket</a></li>
+            <li><a href="/seeTickets.html">See Tickets</a></li>
+            <li><a href="/addUser.html">Add user</a></li>
+        </ul>
+    </menu>
+    <main >
         <form id="newUserForm">
             <label for="firstname">Firstname:</label>
             <input type="text" id="firstname" name="firstname" required><br>
@@ -28,10 +38,10 @@
             <label for="telephone">Telephone Number:</label>
             <input type="text" id="tlf" name="tlf" required minlength="7"><br>
 
-            <!-- <label for="role">Role:</label>
+            <label for="role">Role:</label>
             <select id="role" name="role" required>
                 <option value="" disabled selected>Select role</option>
-            </select><br> -->
+            </select><br>
 
             <label for="postadresse">Postadresse:</label>
             <select id="postadresse" name="postadresse" required>
@@ -40,8 +50,9 @@
 
             <button type="submit">Create User</button>
         </form>
-
-        <p><a href="index.html" class="button">Logg inn</a></p>
     </main>
+    <footer>
+        <button onclick="logout()">Logout</button>
+    </footer>
 </body>
 </html>

@@ -1,3 +1,16 @@
+async function logout() {
+    const response = await fetch("/logout", {
+        method: "POST"
+    });
+
+    if (response.ok) {
+        alert("You are logged out.");
+        window.location.href = "/";
+    } else {
+        alert("Something went wrong");
+    }
+}
+
 async function generateUsername() {
     const firstname = document.getElementById("firstname").value.trim();
     const lastname = document.getElementById("lastname").value.trim();
@@ -29,11 +42,12 @@ document.getElementById("newUserForm").addEventListener("submit", async function
     const password = document.getElementById("password").value;
     const username = document.getElementById("username").value;
     const tlf = document.getElementById("tlf").value;
-    // const role = document.getElementById("role").value;
+    const role = document.getElementById("role").value;
     const postadresse = document.getElementById("postadresse").value;
 
+    console.log(email)
     try {
-        const response = await fetch("/newUser", {
+        const response = await fetch("/adminNewUser", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json"
@@ -45,7 +59,7 @@ document.getElementById("newUserForm").addEventListener("submit", async function
                 password,
                 username,
                 tlf,
-                // role,
+                role,
                 postadresse
             })
             
@@ -57,29 +71,11 @@ document.getElementById("newUserForm").addEventListener("submit", async function
         } else {
             alert(result.message);
             document.getElementById("newUserForm").reset();
-            window.location.href='./index.html';
         }
     } catch (error) {
         alert("Error creating user: " + error.message);
     }
 })
-
-// async function loadRoles() {
-//     try {
-//         const response = await fetch("/getRoles");
-//         if (!response.ok) throw new Error("Could not load roles");
-//         const roles = await response.json();
-//         const select = document.getElementById("role");
-//         roles.forEach(roleItem => {
-//             const option = document.createElement("option");
-//             option.value = roleItem.id;
-//             option.textContent = roleItem.name;
-//             select.appendChild(option);
-//         });
-//     } catch (error) {
-//         console.error("Error loading roles:", error);
-//     }
-// }
 
 async function loadPostadresse() {
     try {
@@ -98,11 +94,30 @@ async function loadPostadresse() {
     }
 }
 
+async function loadRoles() {
+    try {
+        const response = await fetch("/getRoles");
+        if (!response.ok) throw new Error("Could not load roles");
+        const roles = await response.json();
+        const select = document.getElementById("role");
+        roles.forEach(roleItem => {
+            const option = document.createElement("option");
+            option.value = roleItem.id;
+            option.textContent = roleItem.name;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Error loading roles:", error);
+    }
+}
+
 document.addEventListener("DOMContentLoaded", () => {
-    // loadRoles();
+    loadRoles();
     loadPostadresse();
     
     // Generer brukernavn når fornavn eller etternavn endres
-    document.getElementById("firstname").addEventListener("input", generateUsername);
-    document.getElementById("lastname").addEventListener("input", generateUsername);
+    document.getElementById("firstname").addEventListener("change", generateUsername);
+    document.getElementById("lastname").addEventListener("change", generateUsername);
 });
+
+adminNewUser

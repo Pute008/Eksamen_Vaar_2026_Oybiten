@@ -66,6 +66,22 @@ app.post("/logout", (req, res) => {
 })
 
 app.post("/newUser", async (req, res) => {
+    const { firstname, lastname, email, password, username, tlf, postadresse } = req.body;
+    const role = 1;
+    const saltRounds = 10;
+    const hashPassword = await bcrypt.hash(password, saltRounds);
+    const stmt = db.prepare("INSERT INTO users (firstname, lastname, email, password, username, tlf, role_id, post_nr) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    // oppsummerer operasjonen som har blitt utført
+    try {
+        const info = stmt.run(firstname, lastname, email, hashPassword, username, tlf, role, postadresse);
+        res.json({ message: "New user created successfully", info });
+    } catch (error) {
+        console.error("Error creating user:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post("/adminNewUser", kreverRolle(3), async (req, res) => {
     const { firstname, lastname, email, password, username, tlf, role, postadresse } = req.body;
     const saltRounds = 10;
     const hashPassword = await bcrypt.hash(password, saltRounds);
@@ -143,9 +159,6 @@ app.get('/generateUsername', (req, res) => {
     }
 });
 
-
-
-
 app.post("/addTicket", kreverInnlogging, async (req, res) => {
     try {
         const { title, description } = req.body;
@@ -175,6 +188,39 @@ app.get("/seeTickets", kreverRolle(2, 3), (req, res) => {
     }
 });
 
+app.get("/seeYourTickets", kreverInnlogging, (req, res) => {
+    const userID = req.session.users.id;
+    try {
+        const tickets = db.prepare(`SELECT t.id, t.title, t.description, t.created_at, s.status_name, u.firstname, u.lastname, u.email
+            FROM ticket t
+            JOIN Status s
+            ON t.status_id = s.status_id
+            JOIN users u
+            ON t.user_id = u.user_id
+            WHERE u.user_id = ?`).all(userID);
+        res.json({ tickets });
+    } catch (error) {
+        console.error("Error fetching tickets:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
+app.post("/updateTicketStatus", kreverRolle(2, 3), async (req, res) => {
+    try {
+        const { ticket_id, status_id } = req.body;
+        
+        if (!ticket_id || !status_id) {
+            return res.status(400).json({ error: "Ticket ID and Status ID are required" });
+        }
+        
+        const stmt = db.prepare("UPDATE ticket SET status_id = ? WHERE id = ?");
+        const info = stmt.run(status_id, ticket_id);
+        res.json({ message: "Ticket status updated successfully", info });
+    } catch (error) {
+        console.error("Error updating ticket status:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 // rute til html sider
@@ -186,6 +232,10 @@ app.get('/seeTickets.html', kreverInnlogging, (req, res) => {
     res.sendFile(__dirname + "/hidden/seeTickets.html");
 })
 
+app.get('/addUser.html', kreverRolle(3), (req, res) => {
+    res.sendFile(__dirname + "/hidden/addUser.html");
+})
+
 // ruter for å koble til js
 app.get('/addTicket.js', kreverInnlogging, (req, res) => {
     res.sendFile(__dirname + "/hidden/addTicket.js");
@@ -193,6 +243,10 @@ app.get('/addTicket.js', kreverInnlogging, (req, res) => {
 
 app.get('/seeTickets.js', kreverInnlogging, (req, res) => {
     res.sendFile(__dirname + "/hidden/seeTickets.js");
+})
+
+app.get('/addUser.js', kreverRolle(3), (req, res) => {
+    res.sendFile(__dirname + "/hidden/addUser.js");
 })
 
 app.listen(port, () => {
