@@ -96,6 +96,27 @@ app.post("/adminNewUser", kreverRolle(3), async (req, res) => {
     }
 });
 
+app.get('/getUserInfo', (req, res) => {
+    const userID = req.session.users.id;
+    try {
+        const user = db.prepare(`SELECT users.firstname, users.lastname,
+            users.username, users.tlf,
+            users.email, users.password,
+            postadresse.post_nr, postadresse.poststed,
+            roles.role_name
+            FROM users 
+            JOIN postadresse
+            ON users.post_nr = postadresse.post_nr
+            JOIN roles
+            ON users.role_id = roles.role_id
+            WHERE users.user_id = ?`).get(userID);
+        res.json(user);
+    } catch (error) {
+        console.error("Error fetching user info:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.get('/getRoles', (req, res) => {
     try {
         const roles = db.prepare("SELECT role_id as id, role_name as name FROM roles").all();
