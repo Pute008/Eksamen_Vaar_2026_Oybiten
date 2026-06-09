@@ -175,6 +175,22 @@ app.get("/seeTickets", kreverRolle(2, 3), (req, res) => {
     }
 });
 
+app.get("/seeYourTickets", kreverInnlogging, (req, res) => {
+    const userID = req.session.users.id;
+    try {
+        const tickets = db.prepare(`SELECT t.id, t.title, t.description, t.created_at, s.status_name, u.firstname, u.lastname, u.email
+            FROM ticket t
+            JOIN Status s
+            ON t.status_id = s.status_id
+            JOIN users u
+            ON t.user_id = u.user_id
+            WHERE u.user_id = 1`).all(userID);
+        res.json({ tickets });
+    } catch (error) {
+        console.error("Error fetching tickets:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
 
 
 // rute til html sider
