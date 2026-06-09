@@ -236,22 +236,13 @@ async function loadTickets() {
             created.textContent = "Created: " + new Date(ticket.created_at).toLocaleDateString();
             ticketCard.appendChild(created);
 
-            const commentsSection = document.createElement("div");
-            commentsSection.style.marginTop = "15px";
-            commentsSection.style.paddingTop = "15px";
-            commentsSection.style.borderTop = "1px solid #ddd";
-            
-            const commentsTitle = document.createElement("strong");
-            commentsTitle.textContent = "Comments:";
-            commentsSection.appendChild(commentsTitle);
-            
-            const commentsContainer = document.createElement("div");
-            commentsContainer.id = "comments_" + ticket.id;
-            commentsContainer.style.marginTop = "10px";
-            commentsSection.appendChild(commentsContainer);
-            
-            ticketCard.appendChild(commentsSection);
-            loadComments(ticket.id, commentsContainer);
+            const comment = document.createElement("p");
+            if (!ticket.comment) {
+                created.textContent = "Comments: No comments";
+            } else {
+                created.textContent = "Comments: " + ticket.comment;
+
+            }
 
             // Add status dropdown and update button for support/admin
             if (allStatuses.length > 0) {
