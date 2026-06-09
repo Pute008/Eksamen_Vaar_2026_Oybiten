@@ -66,7 +66,8 @@ app.post("/logout", (req, res) => {
 })
 
 app.post("/newUser", async (req, res) => {
-    const { firstname, lastname, email, password, username, tlf, role, postadresse } = req.body;
+    const { firstname, lastname, email, password, username, tlf, postadresse } = req.body;
+    const role = 1;
     const saltRounds = 10;
     const hashPassword = await bcrypt.hash(password, saltRounds);
     const stmt = db.prepare("INSERT INTO users (firstname, lastname, email, password, username, tlf, role_id, post_nr) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");

@@ -29,7 +29,7 @@ document.getElementById("newUserForm").addEventListener("submit", async function
     const password = document.getElementById("password").value;
     const username = document.getElementById("username").value;
     const tlf = document.getElementById("tlf").value;
-    const role = document.getElementById("role").value;
+    // const role = document.getElementById("role").value;
     const postadresse = document.getElementById("postadresse").value;
 
     try {
@@ -45,7 +45,7 @@ document.getElementById("newUserForm").addEventListener("submit", async function
                 password,
                 username,
                 tlf,
-                role,
+                // role,
                 postadresse
             })
             
@@ -64,22 +64,22 @@ document.getElementById("newUserForm").addEventListener("submit", async function
     }
 })
 
-async function loadRoles() {
-    try {
-        const response = await fetch("/getRoles");
-        if (!response.ok) throw new Error("Could not load roles");
-        const roles = await response.json();
-        const select = document.getElementById("role");
-        roles.forEach(roleItem => {
-            const option = document.createElement("option");
-            option.value = roleItem.id;
-            option.textContent = roleItem.name;
-            select.appendChild(option);
-        });
-    } catch (error) {
-        console.error("Error loading roles:", error);
-    }
-}
+// async function loadRoles() {
+//     try {
+//         const response = await fetch("/getRoles");
+//         if (!response.ok) throw new Error("Could not load roles");
+//         const roles = await response.json();
+//         const select = document.getElementById("role");
+//         roles.forEach(roleItem => {
+//             const option = document.createElement("option");
+//             option.value = roleItem.id;
+//             option.textContent = roleItem.name;
+//             select.appendChild(option);
+//         });
+//     } catch (error) {
+//         console.error("Error loading roles:", error);
+//     }
+// }
 
 async function loadPostadresse() {
     try {
@@ -99,7 +99,7 @@ async function loadPostadresse() {
 }
 
 document.addEventListener("DOMContentLoaded", () => {
-    loadRoles();
+    // loadRoles();
     loadPostadresse();
     
     // Generer brukernavn når fornavn eller etternavn endres
