@@ -186,10 +186,10 @@ async function loadTickets() {
                 ticketCard.appendChild(updateButton);
             }
 
-            const button = document.createElement("button");
-            button.textContent = "More info";
-            button.onclick = () => window.location.href = "/updateTicket.html";
-            ticketCard.appendChild(button);
+            // const button = document.createElement("button");
+            // button.textContent = "More info";
+            // button.onclick = () => window.location.href = "/updateTicket.html";
+            // ticketCard.appendChild(button);
             
             tabellBody.appendChild(ticketCard);
         });
