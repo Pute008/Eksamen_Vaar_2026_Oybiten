@@ -1,0 +1,58 @@
+<!-- legge til elev eller lærer -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Add User</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="addUser.js" defer></script>
+</head>
+<body>
+    <header><h1>Add User</h1></header>
+    <menu>
+        <ul>
+            <li><a href="home.html">Home</a></li>
+            <li><a href="/addTicket.html">Add Ticket</a></li>
+            <li><a href="/seeTickets.html">See Tickets</a></li>
+            <li><a href="/addUser.html">Add user</a></li>
+        </ul>
+    </menu>
+    <main >
+        <form id="newUserForm">
+            <label for="firstname">Firstname:</label>
+            <input type="text" id="firstname" name="firstname" required><br>
+
+            <label for="lastname">Lastname:</label>
+            <input type="text" id="lastname" name="lastname" required><br>
+
+            <label for="username">Username:</label>
+            <input type="text" id="username" name="username" readonly><br>
+
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br>
+
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required minlength="6"><br>
+
+            <label for="telephone">Telephone Number:</label>
+            <input type="text" id="tlf" name="tlf" required minlength="7"><br>
+
+            <label for="role">Role:</label>
+            <select id="role" name="role" required>
+                <option value="" disabled selected>Select role</option>
+            </select><br>
+
+            <label for="postadresse">Postadresse:</label>
+            <select id="postadresse" name="postadresse" required>
+                <option value="" disabled selected>Select class</option>
+            </select><br>
+
+            <button type="submit">Create User</button>
+        </form>
+    </main>
+    <footer>
+        <button onclick="logout()">Logout</button>
+    </footer>
+</body>
+</html>

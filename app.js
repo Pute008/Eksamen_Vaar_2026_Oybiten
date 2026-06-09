@@ -80,6 +80,21 @@ app.post("/newUser", async (req, res) => {
     }
 });
 
+app.post("/adminNewUser", kreverRolle(3), async (req, res) => {
+    const { firstname, lastname, email, password, username, tlf, role, postadresse } = req.body;
+    const saltRounds = 10;
+    const hashPassword = await bcrypt.hash(password, saltRounds);
+    const stmt = db.prepare("INSERT INTO users (firstname, lastname, email, password, username, tlf, role_id, post_nr) VALUES (?, ?, ?, ?, ?, ?, ?, ?)");
+    // oppsummerer operasjonen som har blitt utført
+    try {
+        const info = stmt.run(firstname, lastname, email, hashPassword, username, tlf, role, postadresse);
+        res.json({ message: "New user created successfully", info });
+    } catch (error) {
+        console.error("Error creating user:", error);
+        res.status(500).json({ error: error.message });
+    }
+});
+
 app.get('/getRoles', (req, res) => {
     try {
         const roles = db.prepare("SELECT role_id as id, role_name as name FROM roles").all();
@@ -216,6 +231,10 @@ app.get('/seeTickets.html', kreverInnlogging, (req, res) => {
     res.sendFile(__dirname + "/hidden/seeTickets.html");
 })
 
+app.get('/addUser.html', kreverRolle(3), (req, res) => {
+    res.sendFile(__dirname + "/hidden/addUser.html");
+})
+
 // ruter for å koble til js
 app.get('/addTicket.js', kreverInnlogging, (req, res) => {
     res.sendFile(__dirname + "/hidden/addTicket.js");
@@ -223,6 +242,10 @@ app.get('/addTicket.js', kreverInnlogging, (req, res) => {
 
 app.get('/seeTickets.js', kreverInnlogging, (req, res) => {
     res.sendFile(__dirname + "/hidden/seeTickets.js");
+})
+
+app.get('/addUser.js', kreverRolle(3), (req, res) => {
+    res.sendFile(__dirname + "/hidden/addUser.js");
 })
 
 app.listen(port, () => {
