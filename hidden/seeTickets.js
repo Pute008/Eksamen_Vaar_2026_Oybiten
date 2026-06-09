@@ -71,6 +71,11 @@ async function loadYourTickets() {
             ticketCard.style.padding = "15px";
             ticketCard.style.marginBottom = "15px";
             ticketCard.style.borderRadius = "5px";
+            if (ticket.status_name == "Solved") {
+                ticketCard.classList.add("ticket-solved");
+            } else if (ticket.status_name == "New") {
+                ticketCard.classList.add("ticket-new");
+            }
             ticketCard.classList.add('class');
             
             const ticketId = document.createElement("p");

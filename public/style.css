@@ -1,0 +1,412 @@
+/* =============================================
+   Øybiten Kundeportal — style.css
+   Gjelder: index.html, home.html, newUser.html,
+            addTicket.html, seeTickets.html
+   ============================================= */
+
+/* ---------- Reset & base ---------- */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+:root {
+    --primary:       #1D9E75;
+    --primary-dark:  #0F6E56;
+    --primary-light: #E1F5EE;
+    --accent:        #085041;
+
+    --bg-page:       #f5f7f6;
+    --bg-card:       #ffffff;
+    --bg-input:      #ffffff;
+
+    --text-main:     #1a1a1a;
+    --text-muted:    #5a6b65;
+    --text-label:    #3a4a44;
+
+    --border:        #c8d8d2;
+    --border-focus:  #1D9E75;
+
+    --radius-sm:     6px;
+    --radius-md:     10px;
+    --radius-lg:     16px;
+
+    --shadow-card:   0 2px 12px rgba(15, 110, 86, 0.08);
+
+    --font: 'Segoe UI', system-ui, -apple-system, sans-serif;
+}
+
+html, body {
+    height: 100%;
+}
+
+body {
+    font-family: var(--font);
+    font-size: 15px;
+    line-height: 1.6;
+    color: var(--text-main);
+    background-color: var(--bg-page);
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+/* ---------- Header ---------- */
+header {
+    background-color: var(--primary-dark);
+    color: #ffffff;
+    padding: 0 2rem;
+    height: 56px;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+header h1 {
+    font-size: 1.25rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    color: #ffffff;
+}
+
+/* ---------- Navigasjonsmeny ---------- */
+menu {
+    background-color: var(--primary);
+    padding: 0 2rem;
+    list-style: none;
+}
+
+menu ul {
+    display: flex;
+    gap: 0;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+menu ul li a {
+    display: inline-block;
+    color: rgba(255,255,255,0.88);
+    text-decoration: none;
+    padding: 0.65rem 1.1rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    transition: background 0.15s, color 0.15s;
+    border-bottom: 2px solid transparent;
+}
+
+menu ul li a:hover {
+    background-color: rgba(0,0,0,0.12);
+    color: #ffffff;
+}
+
+menu ul li a:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: -2px;
+}
+
+/* ---------- Hovedinnhold ---------- */
+main {
+    flex: 1;
+    padding: 2.5rem 1.5rem;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+}
+
+/* ---------- Kort / skjema-wrapper ---------- */
+main form,
+main .card {
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-card);
+    padding: 2rem 2.25rem;
+    width: 100%;
+    max-width: 460px;
+}
+
+main form h2,
+main .card h2 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--primary-dark);
+    margin-bottom: 1.5rem;
+}
+
+/* ---------- Skjemaelementer ---------- */
+label {
+    display: block;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    color: var(--text-label);
+    margin-bottom: 0.3rem;
+    margin-top: 1rem;
+}
+
+label:first-of-type {
+    margin-top: 0;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+select,
+textarea {
+    width: 100%;
+    padding: 0.6rem 0.85rem;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    background: var(--bg-input);
+    font-family: var(--font);
+    font-size: 0.9375rem;
+    color: var(--text-main);
+    transition: border-color 0.15s, box-shadow 0.15s;
+    appearance: none;
+}
+
+input[type="text"]:hover,
+input[type="email"]:hover,
+input[type="password"]:hover,
+input[type="tel"]:hover,
+select:hover,
+textarea:hover {
+    border-color: var(--primary);
+}
+
+input[type="text"]:focus,
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type="tel"]:focus,
+select:focus,
+textarea:focus {
+    outline: none;
+    border-color: var(--border-focus);
+    box-shadow: 0 0 0 3px rgba(29, 158, 117, 0.15);
+}
+
+textarea {
+    min-height: 120px;
+    resize: vertical;
+}
+
+select {
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24'%3E%3Cpath fill='%235a6b65' d='M7 10l5 5 5-5z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    padding-right: 2rem;
+}
+
+/* Fjern <br> mellom felt */
+br {
+    display: none;
+}
+
+/* ---------- Knapper ---------- */
+button,
+input[type="submit"],
+a.button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.4em;
+    padding: 0.6rem 1.4rem;
+    border: none;
+    border-radius: var(--radius-sm);
+    background-color: var(--primary);
+    color: #ffffff;
+    font-family: var(--font);
+    font-size: 0.9375rem;
+    font-weight: 500;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s, transform 0.1s;
+    margin-top: 1.25rem;
+}
+
+button:hover,
+input[type="submit"]:hover,
+a.button:hover {
+    background-color: var(--primary-dark);
+}
+
+button:active,
+input[type="submit"]:active,
+a.button:active {
+    transform: scale(0.98);
+}
+
+button:focus-visible,
+input[type="submit"]:focus-visible,
+a.button:focus-visible {
+    outline: 2px solid var(--primary);
+    outline-offset: 2px;
+}
+
+/* Sekundærknapp (f.eks. logout i footer) */
+button.secondary {
+    background-color: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+}
+
+button.secondary:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+    border-color: var(--primary);
+}
+
+/* ---------- Lenker ---------- */
+a {
+    color: var(--primary-dark);
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+main form p,
+main .card p {
+    margin-top: 1rem;
+    font-size: 0.875rem;
+    color: var(--text-muted);
+}
+
+/* ---------- Ticket-tabell (seeTickets) ---------- */
+main > div,
+main .ticket-container {
+    width: 100%;
+    max-width: 900px;
+}
+
+.ticket-solved {
+    background-color: #d4edda;
+    border-color: #28a745 !important;
+}
+
+.ticket-new {
+    background-color: #d0e8ff;
+    border-color: #0d6efd !important;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-md);
+    overflow: hidden;
+    box-shadow: var(--shadow-card);
+    font-size: 0.9rem;
+}
+
+thead {
+    background-color: var(--primary-light);
+}
+
+thead th {
+    text-align: left;
+    padding: 0.75rem 1rem;
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+    border-bottom: 1px solid var(--border);
+}
+
+tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background 0.1s;
+}
+
+tbody tr:last-child {
+    border-bottom: none;
+}
+
+tbody tr:hover {
+    background-color: #f0faf6;
+}
+
+tbody td {
+    padding: 0.75rem 1rem;
+    color: var(--text-main);
+    vertical-align: top;
+}
+
+/* Status-badges */
+.badge {
+    display: inline-block;
+    padding: 0.2em 0.65em;
+    border-radius: 99px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+}
+
+/* ---------- Footer ---------- */
+footer {
+    background-color: var(--bg-card);
+    border-top: 1px solid var(--border);
+    padding: 0.75rem 2rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+footer button {
+    margin-top: 0;
+    background-color: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    padding: 0.45rem 1rem;
+    font-size: 0.875rem;
+}
+
+footer button:hover {
+    background-color: var(--primary-light);
+    color: var(--primary-dark);
+    border-color: var(--primary);
+}
+
+/* ---------- Feilmeldinger ---------- */
+.error-msg {
+    color: #c0392b;
+    font-size: 0.8125rem;
+    margin-top: 0.4rem;
+}
+
+.success-msg {
+    color: var(--primary-dark);
+    font-size: 0.8125rem;
+    margin-top: 0.4rem;
+}
+
+/* ---------- Responsiv ---------- */
+@media (max-width: 600px) {
+    main {
+        padding: 1.5rem 1rem;
+    }
+
+    main form,
+    main .card {
+        padding: 1.5rem 1.25rem;
+    }
+
+    header {
+        padding: 0 1rem;
+    }
+
+    menu {
+        padding: 0 0.5rem;
+    }
+
+    menu ul li a {
+        padding: 0.65rem 0.75rem;
+        font-size: 0.8125rem;
+    }
+}
