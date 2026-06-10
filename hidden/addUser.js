@@ -120,4 +120,4 @@ document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("lastname").addEventListener("change", generateUsername);
 });
 
-adminNewUser
+// adminNewUser

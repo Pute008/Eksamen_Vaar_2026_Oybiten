@@ -17,6 +17,7 @@
             <li><a href="/addTicket.html">Add Ticket</a></li>
             <li><a href="/seeTickets.html">See Tickets</a></li>
             <li><a href="/addUser.html">Add user</a></li>
+            <li><a href="/deleteUser.html">Delete User</a></li>
         </ul>
     </menu>
     <main>
@@ -26,6 +27,11 @@
 
             <label for="description">Description:</label>
             <textarea id="description" name="description" maxlength="350" required></textarea><br>
+
+            <label for="role">Role:</label>
+            <select id="role" name="role" required>
+                <option value="" disabled selected>Select role</option>
+            </select><br>
 
             <button type="submit">Create Ticket</button>
         </form>

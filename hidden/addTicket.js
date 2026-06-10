@@ -11,11 +11,29 @@ async function logout() {
     }
 }
 
+async function loadRoles() {
+    try {
+        const response = await fetch("/getRoles");
+        if (!response.ok) throw new Error("Could not load roles");
+        const roles = await response.json();
+        const select = document.getElementById("role");
+        roles.forEach(roleItem => {
+            const option = document.createElement("option");
+            option.value = roleItem.id;
+            option.textContent = roleItem.name;
+            select.appendChild(option);
+        });
+    } catch (error) {
+        console.error("Error loading roles:", error);
+    }
+}
+
 document.getElementById("addTicketForm").addEventListener("submit", async function(event) {
     event.preventDefault();
 
     const title = document.getElementById("title").value;
     const description = document.getElementById("description").value;
+    const role = document.getElementById("role").value;
 
     try {
         const response = await fetch("/addTicket", {
@@ -25,7 +43,8 @@ document.getElementById("addTicketForm").addEventListener("submit", async functi
             },
             body: JSON.stringify({
                 title,
-                description
+                description,
+                role
             })
         });
 
@@ -39,4 +58,8 @@ document.getElementById("addTicketForm").addEventListener("submit", async functi
     } catch (error) {
         alert("Error creating ticket: " + error.message);
     }
+});
+
+document.addEventListener("DOMContentLoaded", () => {
+    loadRoles();
 });

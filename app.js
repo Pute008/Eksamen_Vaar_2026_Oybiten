@@ -182,16 +182,16 @@ app.get('/generateUsername', (req, res) => {
 
 app.post("/addTicket", kreverInnlogging, async (req, res) => {
     try {
-        const { title, description } = req.body;
+        const { title, description, role } = req.body;
         const user_id = req.session.users.id;
         const status_id = 5; // Status "New"
         
-        if (!title || !description) {
-            return res.status(400).json({ error: "Title and description are required" });
+        if (!title || !description || !role) {
+            return res.status(400).json({ error: "Title, description and role are required" });
         }
         
-        const stmt = db.prepare("INSERT INTO ticket (user_id, status_id, title, description, created_at) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)");
-        const info = stmt.run(user_id, status_id, title, description);
+        const stmt = db.prepare("INSERT INTO ticket (user_id, status_id, title, description, role_id, created_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
+        const info = stmt.run(user_id, status_id, title, description, role);
         res.json({ message: "Ticket created successfully", info });
     } catch (error) {
         console.error("Error creating ticket:", error);
@@ -201,7 +201,14 @@ app.post("/addTicket", kreverInnlogging, async (req, res) => {
 
 app.get("/seeTickets", kreverRolle(2, 3), (req, res) => {
     try {
-        const tickets = db.prepare("SELECT t.id, t.title, t.description, t.created_at, s.status_name, u.firstname, u.lastname, u.email FROM ticket t JOIN Status s ON t.status_id = s.status_id JOIN users u ON t.user_id = u.user_id ORDER BY t.created_at DESC").all();
+        const userRole = req.session.users.role;
+        const tickets = db.prepare(`SELECT t.id, t.title, t.description, t.created_at, s.status_name, u.firstname, u.lastname, u.email, r.role_name
+            FROM ticket t
+            JOIN Status s ON t.status_id = s.status_id
+            JOIN users u ON t.user_id = u.user_id
+            LEFT JOIN Roles r ON t.role_id = r.role_id
+            WHERE t.role_id = ?
+            ORDER BY t.created_at DESC`).all(userRole);
         res.json({ tickets });
     } catch (error) {
         console.error("Error fetching tickets:", error);
@@ -212,12 +219,14 @@ app.get("/seeTickets", kreverRolle(2, 3), (req, res) => {
 app.get("/seeYourTickets", kreverInnlogging, (req, res) => {
     const userID = req.session.users.id;
     try {
-        const tickets = db.prepare(`SELECT t.id, t.title, t.description, t.created_at, s.status_name, u.firstname, u.lastname, u.email
+        const tickets = db.prepare(`SELECT t.id, t.title, t.description, t.created_at, s.status_name, u.firstname, u.lastname, u.email, r.role_name
             FROM ticket t
             JOIN Status s
             ON t.status_id = s.status_id
             JOIN users u
             ON t.user_id = u.user_id
+            LEFT JOIN Roles r
+            ON t.role_id = r.role_id
             WHERE u.user_id = ?`).all(userID);
         res.json({ tickets });
     } catch (error) {
@@ -282,6 +291,47 @@ app.get("/getComments/:ticketId", kreverInnlogging, (req, res) => {
 });
 
 
+// delete user
+app.post("/loginDelete", kreverInnlogging, async (req, res) => {
+    // henter email og passord fra html-element
+    const { email, password } = req.body;
+    const users = db.prepare("SELECT * FROM users WHERE email = ?").get(email);
+    // sjekker om brukeren er riktig (email)
+    if (!users) {
+        return res.status(401).json({ message: "Wrong email or password" });
+    }
+
+    // sjekker om id-en din samsvarer med session id-en
+    if (users.user_id !== req.session.users.id) {
+        return res.status(403).json({ message: "Wrong email or password" });
+    }
+
+    // sjekker om passord er riktig, bruker bcrypt
+    const passordErGyldig = await bcrypt.compare(password, users.password);
+    if (!passordErGyldig) {
+        return res.status(401).json({ message: "Wrong email or password"})
+    }
+
+    res.json({ message: "Successful" });
+})
+
+app.delete('/deleteUser', kreverInnlogging, (req, res) => {
+    const { email, password } = req.body;
+    const userID = req.session.users.id;
+    try {
+        const stmt = db.prepare("DELETE FROM users WHERE user_id = ?");
+        stmt.run(userID)
+        // ødelegger session
+        req.session.destroy();
+        // sender melding og sender deg til index filen
+        res.json({ message: "User was successfully deleted", redirect: "index.html" })
+    } catch (error) {
+        console.error("Feil ved sletting av kort:", error);
+        res.status(500).json({ message: "Kunne ikke slette kortet" });
+    }
+})
+
+
 // rute til html sider
 app.get('/addTicket.html', kreverInnlogging, (req, res) => {
     res.sendFile(__dirname + "/hidden/addTicket.html");
@@ -295,6 +345,10 @@ app.get('/addUser.html', kreverRolle(3), (req, res) => {
     res.sendFile(__dirname + "/hidden/addUser.html");
 })
 
+app.get('/deleteUser.html', kreverInnlogging, (req, res) => {
+    res.sendFile(__dirname + "/hidden/deleteUser.html");
+})
+
 // ruter for å koble til js
 app.get('/addTicket.js', kreverInnlogging, (req, res) => {
     res.sendFile(__dirname + "/hidden/addTicket.js");
@@ -306,6 +360,10 @@ app.get('/seeTickets.js', kreverInnlogging, (req, res) => {
 
 app.get('/addUser.js', kreverRolle(3), (req, res) => {
     res.sendFile(__dirname + "/hidden/addUser.js");
+})
+
+app.get('/deleteUser.js', kreverInnlogging, (req, res) => {
+    res.sendFile(__dirname + "/hidden/deleteUser.js");
 })
 
 app.listen(port, () => {
