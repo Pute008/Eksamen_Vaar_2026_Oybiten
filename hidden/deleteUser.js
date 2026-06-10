@@ -39,5 +39,22 @@ async function deleteUser(email, password) {
         window.location.href = result.redirect;
     } else {
         alert(result.message);
+        if (result.hasTickets) {
+            document.getElementById("requestDeleteSection").style.display = "block";
+        }
+    }
+}
+
+async function requestDeleteTicket() {
+    const response = await fetch('/requestDeleteUser', {
+        method: "POST",
+        headers: { "Content-Type": "application/json" }
+    });
+
+    const result = await response.json();
+    alert(result.message);
+
+    if (response.ok) {
+        document.getElementById("requestDeleteSection").style.display = "none";
     }
 }
