@@ -319,6 +319,16 @@ app.delete('/deleteUser', kreverInnlogging, (req, res) => {
     const { email, password } = req.body;
     const userID = req.session.users.id;
     try {
+        // Sjekk om brukeren har opprettet noen tickets
+        const ticketCount = db.prepare("SELECT COUNT(*) as count FROM ticket WHERE user_id = ?").get(userID);
+        
+        if (ticketCount.count > 0) {
+            return res.status(403).json({
+                message: "Du kan ikke slette kontoen din fordi du har opprettet tickets. Send en forespørsel om sletting til en administrator.",
+                hasTickets: true
+            });
+        }
+        
         const stmt = db.prepare("DELETE FROM users WHERE user_id = ?");
         stmt.run(userID)
         // ødelegger session
@@ -331,6 +341,21 @@ app.delete('/deleteUser', kreverInnlogging, (req, res) => {
     }
 })
 
+app.post('/requestDeleteUser', kreverInnlogging, (req, res) => {
+    const user_id = req.session.users.id;
+    try {
+        const existing = db.prepare("SELECT id FROM ticket WHERE user_id = ? AND status_id = 6").get(user_id);
+        if (existing) {
+            return res.status(409).json({ message: "Du har allerede sendt en forespørsel om sletting." });
+        }
+        const stmt = db.prepare("INSERT INTO ticket (user_id, status_id, title, description, role_id, created_at) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)");
+        stmt.run(user_id, 6, "Slett konto", "Bruker ønsker å slette kontoen sin.", 3);
+        res.json({ message: "Forespørsel om sletting er sendt til en administrator." });
+    } catch (error) {
+        console.error("Feil ved opprettelse av slett-ticket:", error);
+        res.status(500).json({ message: "Kunne ikke sende forespørsel." });
+    }
+})
 
 // rute til html sider
 app.get('/addTicket.html', kreverInnlogging, (req, res) => {
