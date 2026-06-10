@@ -236,6 +236,10 @@ async function loadTickets() {
             const user = document.createElement("p");
             user.textContent = "User: " + ticket.firstname + " " + ticket.lastname + " (" + ticket.email + ")";
             ticketCard.appendChild(user);
+
+            const role = document.createElement("p");
+            role.textContent = "Assigned Role: " + ticket.role_name;
+            ticketCard.appendChild(role);
             
             const status = document.createElement("p");
             status.textContent = "Status: " + ticket.status_name;

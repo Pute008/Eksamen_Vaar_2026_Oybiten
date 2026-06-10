@@ -3,14 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>See Tickets</title>
+    <title>Document</title>
     <link rel="stylesheet" href="style.css">
-    <script src="seeTickets.js" defer></script>
+    <script src="deleteUser.js" defer></script>
 </head>
 <body>
-    <header>
-        <h1>See Tickets</h1>
-    </header>
     <menu>
         <ul>
             <li><a href="home.html">Home</a></li>
@@ -21,17 +18,15 @@
         </ul>
     </menu>
     <main>
-        <div id="yourTickets">
-            <h1>Your Tickets</h1>
-        </div>
+        <form onsubmit="loginPersonDelete(event)">
+            <label for="email">Email:</label>
+            <input type="email" id="email" name="email" required><br>
 
-        <div id="ticketList" style="display: none;">
-            <h1>Ticket List</h1>
-        </div>
+            <label for="password">Password:</label>
+            <input type="password" id="password" name="password" required><br>
+
+            <button type="submit">Logg inn</button>
+        </form>
     </main>
-
-    <footer>
-        <button onclick="logout()">Logout</button>
-    </footer>
 </body>
 </html>
